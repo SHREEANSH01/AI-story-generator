@@ -2,8 +2,8 @@ import streamlit as st
 import openai
 import os
 
-# Set your OpenAI API key
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Set your OpenAI API key (correct way for openai>=1.0.0)
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # --- UI Setup ---
 st.set_page_config(page_title="AI Story Generator", page_icon="📖", layout="centered")
@@ -31,7 +31,7 @@ temperature = st.slider("🎨 Creativity level (temperature)", 0.5, 1.0, 0.9)
 if st.button("✨ Generate Story") and prompt:
     with st.spinner("Crafting your story..."):
         try:
-            response = client.chat.completions.create(
+            response = openai.chat.completions.create(
                 model="gpt-4",
                 messages=[
                     {"role": "system", "content": f"You are a creative storyteller who writes {genre.lower()} stories."},
