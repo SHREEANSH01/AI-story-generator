@@ -3,7 +3,7 @@ import openai
 import os
 
 # Set your OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # --- UI Setup ---
 st.set_page_config(page_title="AI Story Generator", page_icon="📖", layout="centered")
@@ -31,7 +31,7 @@ temperature = st.slider("🎨 Creativity level (temperature)", 0.5, 1.0, 0.9)
 if st.button("✨ Generate Story") and prompt:
     with st.spinner("Crafting your story..."):
         try:
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model="gpt-4",
                 messages=[
                     {"role": "system", "content": f"You are a creative storyteller who writes {genre.lower()} stories."},
@@ -40,7 +40,7 @@ if st.button("✨ Generate Story") and prompt:
                 max_tokens=length_map[length],
                 temperature=temperature
             )
-            story = response['choices'][0]['message']['content']
+            story = response.choices[0].message.content
             st.markdown("### 🌟 Your AI-Generated Story")
             st.write(story)
         except Exception as e:
